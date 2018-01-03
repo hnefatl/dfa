@@ -10,7 +10,7 @@ This repository follows the standard Stack layout:
 
 - `src/` contains the "library" code (the API).
 - `app/` contains the "demo executable" code.
-- `test/" contains the test suite.
+- `test/` contains the test suite.
 
 Tests are written using [`Tasty`](https://github.com/feuerbach/tasty) with the `HUnit` and `QuickCheck` providers.
 
