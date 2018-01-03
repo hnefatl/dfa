@@ -54,7 +54,7 @@ dfaTests = testGroup "DFA Tests"
         testGroup "fromInput"
         [
             testCase "fromInput Plus" $ do D.fromInput D.Plus @?= '+',
-            testCase "fromInput Minus" $ do D.fromInput D.Minus @?= '+',
+            testCase "fromInput Minus" $ do D.fromInput D.Minus @?= '-',
             testCase "fromInput ToggleNegate" $ do D.fromInput D.ToggleNegate @?= 'n',
             testCase "fromInput ToggleEnabled" $ do D.fromInput D.ToggleEnabled @?= 'e'
         ],
