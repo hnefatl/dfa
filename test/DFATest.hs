@@ -30,6 +30,10 @@ dfaTests = testGroup "DFA Tests"
             in
                 testProperty "toInput '*'" (forAll others conversionFails)
         ],
+        testGroup "toInputs"
+        [
+            
+        ],
         testGroup "evaluate"
         [
             "+-n--n" `shouldBe` [1,-1,0,1,1,0],
