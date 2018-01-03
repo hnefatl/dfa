@@ -5,15 +5,35 @@ module DFATest
 
 import Test.Tasty
 import Test.Tasty.HUnit
-import DFA
+import Test.Tasty.QuickCheck
+--import Test.Tasty.QuickCheck.Gen
+import qualified DFA as D
 
-testTemplate :: String -> Integer -> TestTree
-testTemplate s r = testCase s $ sum (evaluate s) @=? r
+shouldBe :: String -> D.Output -> TestTree
+shouldBe input expected = testCase input $
+            case D.toInputs input of
+                Nothing -> assertFailure "Input could not be converted to DFA input"
+                Just i  -> expected @=? D.evaluate i
 
 dfaTests :: TestTree
 dfaTests = testGroup "DFA Tests"
     [
-        testTemplate "+-n--n" 2,
-        testTemplate "+e----e++" 3,
-        testTemplate "-n++e++e--+-n++" 1
+        testGroup "toInput"
+        [
+            testCase "toInput '+'" $ do D.toInput '+' @?= Just D.Plus,
+            testCase "toInput '-'" $ do D.toInput '-' @?= Just D.Minus,
+            testCase "toInput 'n'" $ do D.toInput 'n' @?= Just D.ToggleNegate,
+            testCase "toInput 'e'" $ do D.toInput 'e' @?= Just D.ToggleEnabled,
+
+            let others = arbitrary `suchThat` (\c -> c `notElem` ['+', '-', 'n', 'e'])
+                conversionFails c = D.toInput c == Nothing
+            in
+                testProperty "toInput '*'" (forAll others conversionFails)
+        ],
+        testGroup "evaluate"
+        [
+            "+-n--n" `shouldBe` [1,-1,0,1,1,0],
+            "+e----e++" `shouldBe` [1,0,0,0,0,0,0,1,1],
+            "-n++e++e--+-n++" `shouldBe` [-1,0,-1,-1,0,0,0,0,1,1,-1,1,0,1,1]
+        ]
     ]
